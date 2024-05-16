@@ -47,11 +47,31 @@ class _MyHomeAppState extends State<MyHomeApp> {
     return Scaffold(
       appBar: AppBar(
         title: Text('My To Do List'),
+        actions: <Widget>[
+          Icon(Icons.share),
+          SizedBox(width: 30.0),
+          Icon(
+            Icons.favorite,
+            color: Colors.red,
+          ),
+          SizedBox(width: 20.0),
+          PopupMenuButton(
+              itemBuilder: (BuildContext context) => [
+                    PopupMenuItem(
+                      child: Text('Settings'),
+                      value: 'Settings',
+                    ),
+                    PopupMenuItem(
+                      child: Text('Logout'),
+                      value: 'Logout',
+                    )
+                  ])
+        ],
       ),
       body: getListTiles(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          navigateTocreate(context,'Create To Do');
+          navigateTocreate(context, 'Create To Do');
         },
         tooltip: 'Create',
         child: const Icon(Icons.add),
@@ -97,6 +117,8 @@ class _MyHomeAppState extends State<MyHomeApp> {
   deleteItem(index) {
     setState(() {
       myToDoList.removeAt(index);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Item Deleted Successfully")));
     });
   }
 
@@ -109,7 +131,7 @@ class _MyHomeAppState extends State<MyHomeApp> {
                 myToDoList[index]['title'],
                 myToDoList[index]['description'],
                 myToDoList[index]['status'])));
-    if (result!=null) {
+    if (result != null) {
       var data = result as Object;
       setState(() {
         myToDoList[index] = data;
@@ -122,12 +144,9 @@ class _MyHomeAppState extends State<MyHomeApp> {
     Map<String, dynamic>? result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CreateTODO(
-                appBarTitle,
-                title ,
-                title ,
-                'Pending')));
-    if (result!=null) {
+            builder: (context) =>
+                CreateTODO(appBarTitle, title, title, 'Pending')));
+    if (result != null) {
       print(result);
       var data = result as Object;
       setState(() {
